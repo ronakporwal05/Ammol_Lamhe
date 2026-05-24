@@ -4,6 +4,46 @@
 
 An AI-powered event photo delivery platform. Photographers upload event photos, share a link with clients, and clients upload a selfie to instantly find and download their photos using browser-based face recognition.
 
+## 📁 Project Structure
+
+```
+anmol-lamhe/
+├── frontend/                    ← React/Vite UI
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── .env / .env.example
+│   ├── public/
+│   │   ├── favicon.svg
+│   │   ├── icons.svg
+│   │   └── models/              ← AI model weights (served by Vite)
+│   └── src/
+│       ├── App.jsx
+│       ├── main.jsx
+│       ├── index.css
+│       ├── components/          ← All React UI components
+│       ├── routes/              ← PrivateRoute.jsx
+│       └── assets/              ← Static images
+│
+├── backend/                     ← Firebase service layer
+│   ├── firebase/
+│   │   ├── config.js            ← Firebase initialization
+│   │   ├── auth.js              ← Authentication helpers
+│   │   ├── firestore.js         ← Firestore CRUD operations
+│   │   └── storage.js           ← Image compression & storage
+│   └── index.js                 ← Barrel export
+│
+└── ai/                          ← Face recognition engine
+    ├── faceRecognition/
+    │   ├── loadModels.js         ← Model loader
+    │   ├── detectFace.js         ← Face detection (single + multi)
+    │   └── matchFaces.js         ← Face matching algorithm
+    ├── models/                   ← AI model weights (source of truth)
+    ├── download-models.cjs       ← Model downloader script
+    └── index.js                  ← Barrel export
+```
+
 ## ✨ Features
 
 ### Admin Side
@@ -25,7 +65,7 @@ An AI-powered event photo delivery platform. Photographers upload event photos, 
 ### Face Recognition
 - Uses **face-api.js** (ssdMobilenetv1, faceLandmark68Net, faceRecognitionNet)
 - All processing in the browser — no server-side AI
-- Euclidean distance threshold: 0.5 (adjustable)
+- Euclidean distance threshold: 0.53 (adjustable)
 - Only compares within the specific event
 
 ## 🛠 Tech Stack
@@ -55,6 +95,7 @@ cd anmol-lamhe
 
 ### 2. Install dependencies
 ```bash
+cd frontend
 npm install
 ```
 
@@ -73,7 +114,7 @@ Copy `.env.example` to `.env` and fill in your Firebase config:
 cp .env.example .env
 ```
 
-Edit `.env`:
+Edit `frontend/.env`:
 ```
 VITE_FIREBASE_API_KEY=your_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
@@ -87,11 +128,13 @@ VITE_FIREBASE_APP_ID=your_app_id
 
 ### 5. Download face-api.js models
 ```bash
+cd ai
 node download-models.cjs
 ```
 
 ### 6. Run the dev server
 ```bash
+cd frontend
 npm run dev
 ```
 
@@ -133,8 +176,9 @@ service firebase.storage {
 
 1. Push to GitHub
 2. Go to [Vercel](https://vercel.com) and import the repo
-3. Add all `VITE_FIREBASE_*` environment variables in Vercel settings
-4. Deploy!
+3. Set **Root Directory** to `frontend`
+4. Add all `VITE_FIREBASE_*` environment variables in Vercel settings
+5. Deploy!
 
 ## 👤 Admin Usage
 
@@ -151,41 +195,6 @@ service firebase.storage {
 2. Upload a clear selfie
 3. Wait for AI to process and find matching photos
 4. View and download your matched photos
-
-## 📁 Project Structure
-
-```
-/src
-  /components
-    AdminLogin.jsx
-    AdminSignup.jsx
-    AdminDashboard.jsx
-    CreateEvent.jsx
-    EventList.jsx
-    UploadPhotos.jsx
-    ClientEventPage.jsx
-    SelfieUpload.jsx
-    MatchedPhotosGallery.jsx
-    Spinner.jsx
-    Navbar.jsx
-  /firebase
-    config.js
-    auth.js
-    firestore.js
-    storage.js
-  /faceRecognition
-    loadModels.js
-    detectFace.js
-    matchFaces.js
-  /routes
-    PrivateRoute.jsx
-  App.jsx
-  main.jsx
-/public
-  /models ← face-api.js model files
-.env.example
-README.md
-```
 
 ## 📋 Reference
 
